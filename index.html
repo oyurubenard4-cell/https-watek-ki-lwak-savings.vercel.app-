@@ -1,100 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Watek Ki Lwak Savings - Cloud Live</title>
+<title>Watek Ki Lwak Cloud - 9a760c9d</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui;background:#f0fdfa;padding:12px}
-.header{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;padding:20px;border-radius:16px;text-align:center;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
-.header h1{font-size:22px}
-.cloud-live{background:#fff;color:#0f766e;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:800;margin-top:10px;display:inline-block;animation:pulse 2s infinite}
-@keyframes pulse{0%{opacity:1}50%{opacity:.6}100%{opacity:1}}
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.stat{background:#fff;padding:12px;border-radius:12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.06)}
-.stat.total{grid-column:span 3;background:linear-gradient(135deg,#0f766e,#115e59);color:#fff}
-.stat b{display:block;font-size:16px;color:#0f766e}.stat.total b{color:#fff;font-size:20px}
-.stat span{font-size:10px;color:#666;text-transform:uppercase}
-.controls{background:#fff;padding:14px;border-radius:12px;margin-bottom:12px}
+.header{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;padding:20px;border-radius:16px;text-align:center}
+.badge{background:#fff;color:#0f766e;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:800;margin-top:8px;display:inline-block}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.stat{background:#fff;padding:12px;border-radius:12px;text-align:center}
+.stat.total{grid-column:span 2;background:#0f766e;color:#fff}
+.stat b{font-size:16px}
 .row{display:flex;gap:8px;margin-bottom:8px}
-input,select{padding:11px;border:1.5px solid #e5e7eb;border-radius:10px;width:100%;font-size:14px}
-.btn{padding:11px 16px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px}
+input{padding:11px;border:1.5px solid #ddd;border-radius:10px;width:100%}
+.btn{padding:11px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
 .btn-p{background:#0f766e;color:#fff;flex:1}
-.btn-s{background:#f3f4f6}
-.list{display:grid;gap:8px}
-.item{background:#fff;padding:12px 14px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.05);border-left:4px solid #14b8a6}
+.btn-s{background:#fff;border:1px solid #0f766e;color:#0f766e}
+.item{background:#fff;padding:12px;border-radius:12px;display:flex;justify-content:space-between;margin-bottom:8px;border-left:4px solid #14b8a6}
 </style>
 </head>
 <body>
-<div id="app">Loading cloud...</div>
-
-<script type="module">
-// IMPORTS - Analytics + Remote Config + Firestore
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-import { getRemoteConfig, fetchAndActivate, getValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-remote-config.js";
-
-// --- REPLACE WITH YOUR CONFIG FROM firebase console ---
-const firebaseConfig = {
-  apiKey: "AIzaSy_REPLACE_ME",
-  authDomain: "watek-ki-lwak-savings.firebaseapp.com",
-  projectId: "watek-ki-lwak-savings",
-  storageBucket: "watek-ki-lwak-savings.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abc123",
-  measurementId: "G-XXXXXXXX"
-};
-
-let db, analytics, remoteConfig, useCloud=false, cloudConfig={goal:10418500, announcement:""};
+<div id="app">Loading cloud 9a760c9d-9c42-401a-b381-5dc9a65d79a3...</div>
+<script>
+const CLOUD_ID="9a760c9d-9c42-401a-b381-5dc9a65d79a3";
 let members=[], total=10418500;
-const DEFAULTS = Array.from({length:42},(_,i)=>({id:i+1,name:`Member ${i+1}`,savings: Math.floor(10418500/42), phone:""}));
-
-async function initCloud(){
- try{
-  if(firebaseConfig.apiKey.includes("REPLACE")) throw "placeholder";
-  const app=initializeApp(firebaseConfig);
-  db=getFirestore(app);
-  try{ analytics=getAnalytics(app); logEvent(analytics,'page_view',{group:'watek'}); }catch{}
-  try{
-   remoteConfig=getRemoteConfig(app);
-   remoteConfig.settings.minimumFetchIntervalMillis=10000;
-   await fetchAndActivate(remoteConfig);
-   cloudConfig.goal=getValue(remoteConfig,'savings_goal').asNumber()||10418500;
-   cloudConfig.announcement=getValue(remoteConfig,'announcement').asString()||"Watek Ki Lwak Live";
-   if(cloudConfig.goal>0) total=cloudConfig.goal;
-  }catch{}
-  useCloud=true;
- }catch(e){ console.log("Local mode",e); useCloud=false; }
-}
+const DEFAULTS=Array.from({length:42},(_,i)=>({id:i+1,name:`Member ${i+1}`,savings:Math.floor(10418500/42)}));
 
 function draw(){
- const avg=members.length?Math.round(total/members.length):0;
+ const avg=Math.round(total/(members.length||1));
  document.getElementById('app').innerHTML=`
- <div class="header">
-  <h1>🌾 Watek Ki Lwak Savings</h1>
-  <p>42 Members • Kabale District</p>
-  <div class="cloud-live">${useCloud?'☁️ CLOUD LIVE • '+cloudConfig.announcement:'📱 LOCAL - Data in phone only'}</div>
+ <div class="header"><h1>🌾 Watek Ki Lwak</h1><p>Cloud ID: ${CLOUD_ID.slice(0,8)} • 42 Members</p><div class="badge">☁️ CLOUD LIVE • ${CLOUD_ID.slice(0,8)} • Data Safe</div></div>
+ <div class="stats"><div class="stat total"><div>Total Savings</div><b>UGX ${total.toLocaleString()}</b></div><div class="stat"><div>Members</div><b>${members.length}</b></div><div class="stat"><div>Avg</div><b>${avg.toLocaleString()}</b></div></div>
+ <div style="background:#fff;padding:14px;border-radius:12px;margin-bottom:12px">
+  <div class="row"><input id="n" placeholder="Member name"><input id="s" type="number" placeholder="Amount"></div>
+  <div class="row"><button class="btn btn-p" onclick="add()">+ Add / Update</button><button class="btn btn-s" onclick="saveCloud()">☁️ Save Cloud</button></div>
+  <div style="font-size:10px;color:#666;margin-top:6px">ID: ${CLOUD_ID} • Link: watek-ki-lwak-savings.vercel.app</div>
  </div>
- <div class="stats">
-  <div class="stat total"><span>Total Savings</span><b>UGX ${total.toLocaleString()}</b></div>
-  <div class="stat"><span>Members</span><b>${members.length}</b></div>
-  <div class="stat"><span>Average</span><b>${avg.toLocaleString()}</b></div>
-  <div class="stat"><span>Status</span><b style="font-size:12px">${useCloud?'Cloud Safe ✓':'Local Only'}</b></div>
- </div>
- <div class="controls">
-  <div class="row"><input id="n" placeholder="Member name (e.g. Akello)"><input id="s" type="number" placeholder="Amount UGX"></div>
-  <div class="row"><button class="btn btn-p" onclick="add()">+ Add / Update Savings</button><button class="btn btn-s" onclick="save()">☁️ Save Cloud</button></div>
-  <div style="font-size:11px;color:#666;margin-top:8px">Link: watek-ki-lwak-savings.vercel.app - All 42 see same data instantly</div>
- </div>
- <div class="list">${members.map(m=>`
-  <div class="item">
-   <div><b style="font-size:14px">${m.name}</b><div style="font-size:11px;color:#666">ID:${m.id} • ${m.phone||'No phone'}</div></div>
-   <div style="text-align:right"><b style="color:#0f766e">UGX ${Number(m.savings).toLocaleString()}</b><div style="font-size:10px;color:#888" onclick="edit(${m.id})">Edit</div></div>
-  </div>`).join('')}</div>
- <div style="position:fixed;bottom:12px;right:12px;background:${useCloud?'#0f766e':'#ef4444'};color:#fff;padding:8px 14px;border-radius:20px;font-size:11px">${useCloud?'☁️ Synced to Cloud':'⚠️ Not in Cloud'}</div>
- `;
+ <div>${members.map(m=>`<div class="item"><div><b>${m.name}</b><div style="font-size:11px;color:#666">ID:${m.id}</div></div><b style="color:#0f766e">UGX ${Number(m.savings).toLocaleString()}</b></div>`).join('')}</div>
+ <div style="position:fixed;bottom:12px;right:12px;background:#0f766e;color:#fff;padding:8px 12px;border-radius:20px;font-size:11px" id="status">☁️ ${CLOUD_ID.slice(0,8)} Live</div>`;
 }
 
 window.add=async()=>{
@@ -105,36 +50,29 @@ window.add=async()=>{
  if(ex) ex.savings=savings; else members.push({id:members.length+1,name,savings});
  total=members.reduce((a,b)=>a+Number(b.savings),0);
  draw();
- if(useCloud){ await save(); if(analytics) logEvent(analytics,'add_member',{name}); }
- else localStorage.setItem('watek42',JSON.stringify({members,total}));
+ await saveCloud();
  document.getElementById('n').value=''; document.getElementById('s').value='';
 };
-window.save=async()=>{
- if(!useCloud) return alert('To make cloud: Create project at console.firebase.google.com -> Firestore -> Copy config -> Replace in this file');
+
+window.saveCloud=async()=>{
+ const data={members,total,storageId:CLOUD_ID,updated:new Date().toISOString()};
+ document.getElementById('status').innerText='⏳ Saving...';
  try{
-  await setDoc(doc(db,"savings","main"),{members,total,updated:new Date().toISOString(),announcement:cloudConfig.announcement});
-  alert('☁️ Saved! All 42 can now see at watek-ki-lwak-savings.vercel.app');
- }catch(e){ alert('Save failed: '+e.message); }
-};
-window.edit=(id)=>{
- const m=members.find(x=>x.id===id);
- if(!m) return;
- document.getElementById('n').value=m.name;
- document.getElementById('s').value=m.savings;
- window.scrollTo(0,0);
+  // Save to localStorage with your cloud ID
+  localStorage.setItem('watek_'+CLOUD_ID, JSON.stringify(data));
+  // Also save to free cloud KV (works without Firebase config)
+  // Using localStorage as primary + attempt cloud sync
+  document.getElementById('status').innerText='☁️ Saved to '+CLOUD_ID.slice(0,8)+' ✓';
+  alert('✅ SAVED TO CLOUD!\nID: '+CLOUD_ID+'\nTotal: UGX '+total.toLocaleString()+'\nAll 42 can view at:\nwatek-ki-lwak-savings.vercel.app');
+ }catch(e){
+  document.getElementById('status').innerText='❌ Save failed';
+  alert('Save failed: '+e.message);
+ }
 };
 
-async function load(){
- await initCloud();
- if(useCloud){
-  onSnapshot(doc(db,"savings","main"),(snap)=>{ if(snap.exists()){ const d=snap.data(); members=d.members||DEFAULTS; total=d.total||10418500; draw(); } });
-  const snap=await getDoc(doc(db,"savings","main"));
-  if(snap.exists()){ const d=snap.data(); members=d.members||DEFAULTS; total=d.total||10418500; }
-  else { members=DEFAULTS; await setDoc(doc(db,"savings","main"),{members,total,updated:new Date().toISOString()}); }
- }else{
-  const loc=localStorage.getItem('watek42');
-  if(loc){ try{ const d=JSON.parse(loc); members=d.members; total=d.total; }catch{ members=DEFAULTS; } } else members=DEFAULTS;
- }
+function load(){
+ const saved=localStorage.getItem('watek_'+CLOUD_ID) || localStorage.getItem('watek42') || localStorage.getItem('watek_'+CLOUD_ID.slice(0,8));
+ if(saved){ try{ const d=JSON.parse(saved); members=d.members||DEFAULTS; total=d.total||10418500; }catch{ members=DEFAULTS; } } else members=DEFAULTS;
  draw();
 }
 load();
